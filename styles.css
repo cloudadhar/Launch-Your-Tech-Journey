@@ -394,6 +394,24 @@ h3 {
   padding: 16px;
 }
 
+.batch-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  background: linear-gradient(180deg, #ffffff, #f6f8fa);
+}
+
+.batch-panel h2 {
+  margin-bottom: 8px;
+  font-size: 1.18rem;
+}
+
+.batch-panel p:last-child {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
 .activity-grid {
   display: grid;
   grid-template-columns: repeat(25, minmax(0, 1fr));
@@ -521,6 +539,11 @@ h3 {
   }
 
   .contact {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .batch-panel {
     align-items: flex-start;
     flex-direction: column;
   }
