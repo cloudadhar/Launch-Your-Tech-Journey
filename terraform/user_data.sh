@@ -74,7 +74,7 @@ cat <<'HTML' | sudo tee /var/www/html/index.html
 </head>
 <body>
   <div class="card">
-    <h1>Welcome to BCA & B.Sc.</h1>
+    <h1>Welcome to Indira University</h1>
     <h2>Let’s Start Your Tech Journey</h2>
     <p class="footer">Choose the Right Path with Confidence</p>
     <div class="paths">
