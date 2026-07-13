@@ -99,7 +99,7 @@ jobs:
         run: |
           INSTANCE_ID="$(terraform output -raw instance_id)"
 
-          for attempt in {1..30}; do
+          for attempt in {1..3}; do
             SSM_STATUS="$(aws ssm describe-instance-information \
               --filters "Key=InstanceIds,Values=${INSTANCE_ID}" \
               --query 'InstanceInformationList[0].PingStatus' \
@@ -109,13 +109,32 @@ jobs:
               break
             fi
 
-            if [ "${attempt}" -eq 30 ]; then
-              echo "EC2 instance did not become available in Systems Manager."
-              exit 1
-            fi
-
             sleep 10
           done
+
+          if [ "${SSM_STATUS}" != "Online" ]; then
+            echo "Bootstrapping Systems Manager with a one-time EC2 reboot."
+            aws ec2 reboot-instances --instance-ids "${INSTANCE_ID}"
+            aws ec2 wait instance-status-ok --instance-ids "${INSTANCE_ID}"
+
+            for attempt in {1..12}; do
+              SSM_STATUS="$(aws ssm describe-instance-information \
+                --filters "Key=InstanceIds,Values=${INSTANCE_ID}" \
+                --query 'InstanceInformationList[0].PingStatus' \
+                --output text)"
+
+              if [ "${SSM_STATUS}" = "Online" ]; then
+                break
+              fi
+
+              if [ "${attempt}" -eq 12 ]; then
+                echo "EC2 instance did not become available in Systems Manager."
+                exit 1
+              fi
+
+              sleep 10
+            done
+          fi
 
           SCRIPT_BASE64="$(base64 < user_data.sh | tr -d '\n')"
           PARAMETERS="$(jq -cn --arg script "${SCRIPT_BASE64}" \
