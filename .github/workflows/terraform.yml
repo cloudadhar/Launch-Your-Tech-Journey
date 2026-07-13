@@ -115,7 +115,6 @@ jobs:
           if [ "${SSM_STATUS}" != "Online" ]; then
             echo "Bootstrapping Systems Manager with a one-time EC2 reboot."
             aws ec2 reboot-instances --instance-ids "${INSTANCE_ID}"
-            aws ec2 wait instance-status-ok --instance-ids "${INSTANCE_ID}"
 
             for attempt in {1..12}; do
               SSM_STATUS="$(aws ssm describe-instance-information \
