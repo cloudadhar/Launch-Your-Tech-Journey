@@ -1,10 +1,16 @@
-name: Terraform EC2 Demo
+name: Deploy AWS EC2 Demo
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "terraform/**"
+      - ".github/workflows/terraform.yml"
   workflow_dispatch:
     inputs:
       action:
-        description: "Terraform action"
+        description: "Terraform action to run"
         required: true
         default: "plan"
         type: choice
@@ -12,34 +18,67 @@ on:
           - plan
           - apply
           - destroy
+      aws_region:
+        description: "AWS region"
+        required: true
+        default: "ap-south-1"
+        type: string
+      instance_type:
+        description: "EC2 instance type"
+        required: true
+        default: "t2.micro"
+        type: string
+      allowed_http_cidr:
+        description: "CIDR allowed to access the demo website"
+        required: true
+        default: "0.0.0.0/0"
+        type: string
 
 permissions:
-  id-token: write
   contents: read
+
+concurrency:
+  group: terraform-ec2-demo
+  cancel-in-progress: false
 
 jobs:
   terraform:
+    name: Terraform ${{ github.event_name == 'push' && 'apply' || inputs.action }}
     runs-on: ubuntu-latest
 
     defaults:
       run:
         working-directory: terraform
 
+    env:
+      TF_IN_AUTOMATION: "true"
+      TF_INPUT: "false"
+      AWS_REGION: ${{ inputs.aws_region || vars.AWS_REGION || 'ap-south-1' }}
+      TF_VAR_aws_region: ${{ inputs.aws_region || vars.AWS_REGION || 'ap-south-1' }}
+      TF_VAR_instance_type: ${{ inputs.instance_type || vars.EC2_INSTANCE_TYPE || 't2.micro' }}
+      TF_VAR_allowed_http_cidr: ${{ inputs.allowed_http_cidr || vars.ALLOWED_HTTP_CIDR || '0.0.0.0/0' }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials using OIDC
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws-region: ap-south-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
-        run: terraform init
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+            -backend-config="key=launch-tech-journey/terraform.tfstate" \
+            -backend-config="region=${{ env.AWS_REGION }}" \
+            -backend-config="encrypt=true"
 
       - name: Terraform Format Check
         run: terraform fmt -check
@@ -48,13 +87,17 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        if: github.event.inputs.action == 'plan'
-        run: terraform plan
+        if: github.event_name == 'push' || inputs.action == 'plan' || inputs.action == 'apply'
+        run: terraform plan -out=tfplan
 
       - name: Terraform Apply
-        if: github.event.inputs.action == 'apply'
-        run: terraform apply -auto-approve
+        if: github.event_name == 'push' || inputs.action == 'apply'
+        run: terraform apply -auto-approve tfplan
+
+      - name: Terraform Output
+        if: github.event_name == 'push' || inputs.action == 'apply'
+        run: terraform output -no-color
 
       - name: Terraform Destroy
-        if: github.event.inputs.action == 'destroy'
+        if: github.event_name == 'workflow_dispatch' && inputs.action == 'destroy'
         run: terraform destroy -auto-approve
