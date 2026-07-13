@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+# Recreate the demo instance when this website script changes.
+
 # Update packages and install Apache
 sudo dnf update -y
 sudo dnf install -y httpd
