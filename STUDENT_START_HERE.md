@@ -2,6 +2,29 @@
 
 Welcome to the Cloud DevOps AI/ML Learning Hub.
 
+## Choosing Your Career Path
+
+Many students choose whichever field is trending or offering the highest package.
+
+The truth: Cloud, AI/ML, and Cybersecurity can all offer excellent salaries when you build strong, valuable skills.
+
+Use this quick difference:
+
+- **Cloud**: Builds and runs digital systems.
+- **AI/ML**: Makes those systems intelligent.
+- **Cybersecurity**: Protects those systems.
+
+Choose based on what problems you enjoy solving:
+
+- Explore **Cloud and DevOps** if you like infrastructure, networking, and automation.
+- Explore **AI/ML** if you like coding, mathematics, data, and prediction.
+- Explore **Cybersecurity** if you like investigation, finding weaknesses, and defense.
+
+Do not ask, "Which career is the best?"
+Ask, "Which type of problem would I enjoy becoming excellent at solving?"
+
+If you came from the reel/post after commenting **"ROADMAP"**, this repository is your complete Digital Career Roadmap.
+
 ## Step 1: Build Foundation
 Read:
 

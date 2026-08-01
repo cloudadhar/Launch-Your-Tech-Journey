@@ -16,6 +16,38 @@ Inspired by the broad folder-based style of [Tikam02/DevOps-Guide](https://githu
 - [Roadmap Index](ROADMAP_INDEX.md)
 - [Technology Stack Maps](stacks/README.md)
 
+## Career Choice Guide (Cloud vs AI/ML vs Cybersecurity)
+
+Many students choose whichever field is trending or offering the highest package.
+
+Here is the truth: all three can offer excellent salaries when you build valuable skills.
+
+Remember this simple difference:
+
+**Cloud builds and runs digital systems.**
+
+**AI/ML makes those systems intelligent.**
+
+**Cybersecurity protects those systems.**
+
+If you enjoy infrastructure, networking, and automation, explore **Cloud and DevOps**.
+
+If you enjoy coding, mathematics, data, and prediction, explore **AI/ML**.
+
+If you enjoy investigation, finding weaknesses, and protecting systems, explore **Cybersecurity**.
+
+Do not ask, "Which career is the best?"
+
+Ask, "Which type of problem would I enjoy becoming excellent at solving?"
+
+Comment **"ROADMAP"** on the reel/post, and use this repository as your complete Digital Career Roadmap:
+
+- [Student Start Here](STUDENT_START_HERE.md)
+- [Roadmap Index](ROADMAP_INDEX.md)
+- [Cloud & DevOps Roadmap](roadmaps/cloud-devops-roadmap.md)
+- [AI / ML / MLOps Roadmap](roadmaps/ai-ml-mlops-roadmap.md)
+- [Cybersecurity Roadmap](roadmaps/cybersecurity-roadmap.md)
+
 ## Learning Domains
 
 | Domain | Guide |
